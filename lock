@@ -7,12 +7,13 @@ IMG="$CACHE/lock/lock-bg.png"
 [ -r "$IMG" ] || exit 1
 
 i3lock \
---clock \
---time-color=ffffff \
---time-size=120 \
---time-font="DejaVu Sans" \
---date-color=ffffff \
---date-size=32 \
---date-font="DejaVu Sans" \
---date-str="%A, %Y-%m-%d" \
--i "$IMG"
+		--color=000000 \
+		--clock \
+		--time-color=ffffff \
+		--time-size=120 \
+		--time-font="DejaVu Sans" \
+		--date-color=ffffff \
+		--date-size=32 \
+		--date-font="DejaVu Sans" \
+		--date-str="%A, %Y-%m-%d" \
+		-i "$IMG"
