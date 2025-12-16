@@ -1,1 +1,1 @@
-# i3lock-color with clock helper script
+# i3lock-color with a clock 
