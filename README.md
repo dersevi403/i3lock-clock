@@ -1,6 +1,6 @@
-# i3lock-clock
+# i3lock with analog clock
 
-i3lock-color wrapper that renders a clock overlay on the lock screen.
+i3lock-color wrapper that renders a lock screen background with transparency effect using convert tool.
 
 ## Dependencies
 
@@ -12,13 +12,13 @@ sudo pacman -S --needed imagemagick i3lock-color
 ## Installation
 
 ```sh
-mkdir -p i3lock-clock 
+mkdir -p i3lock
 curl -fsSL https://github.com/dersevi403/i3lock-clock/archive/refs/tags/v1.0.0.tar.gz \
-| tar xz -C i3lock-clock --strip-components=1
+ | tar xz -C i3lock --strip-components=1
 ```
 
 ```sh
-cd i3lock-clock 
+cd i3lock
 chmod +x i3lock-clock i3lock-update-bg
 ```
 
