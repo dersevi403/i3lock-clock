@@ -13,7 +13,7 @@ sudo pacman -S --needed imagemagick i3lock-color
 
 ```sh
 mkdir -p i3lock-clock 
-curl -fsSL https://github.com/dersevi403/i3lock-clock/archive/refs/tags/v1.0.0.tar.gz 
+curl -fsSL https://github.com/dersevi403/i3lock-clock/archive/refs/tags/v1.0.0.tar.gz \
 | tar xz -C i3lock-clock --strip-components=1
 ```
 
