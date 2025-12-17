@@ -27,19 +27,18 @@ box_convert() {
 composite_convert() {
     IN="${1:?input image required}"
     OUT="${2:?output image required}"
+		RES=$(xdpyinfo | awk '/dimensions:/ {print $2}')
 
-    shift 2
-    set --
-
+		ARGS=""
     if [ -n "${BLUR:-}" ]; then
-        set -- "$@" -blur "$BLUR"
+        ARGS="-blur $BLUR"
     fi
 
     convert "$IN" \
-        -resize 2560x1440^ \
+        -resize "${RES}"^ \
         -gravity center \
-        -extent 2560x1440 \
-        "$@" \
+        -extent "${RES}" \
+        $ARGS \
         \( "$CACHE/box.png" -gravity center -geometry +0-50 \) \
         -composite \
         "png:$OUT"
