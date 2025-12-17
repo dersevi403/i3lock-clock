@@ -1,40 +1,89 @@
 #!/bin/sh
 set -eu
 
-SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+###############################################################################
+# library (convert-helper)
+###############################################################################
 
-export CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/i3lock"
-mkdir -p "$CACHE"
+box_convert() {
+    : "${CACHE:?CACHE must be set}"
 
-OUT="$CACHE/lock-wall.png"
-BLUR=""
+    BOX="$CACHE/box.png"
 
-unset IN
+    convert \
+      -font DejaVu-Sans \
+      \( -background none \
+         -pointsize 120 label:"88:88:88" \
+         -pointsize 32  label:"Wednesday 88 8888" \
+         -append -border 22 \
+      \) \
+      -clone 0 \
+      -fill "#80808080" -colorize 100 \
+      -alpha set -channel A -evaluate set 50% +channel \
+      -delete 0 \
+      "$BOX"
+}
 
-while getopts "i:o:b:" opt; do
-    case "$opt" in
-        i) IN="$OPTARG" ;;
-        o) OUT="$OPTARG" ;;
-        b) BLUR="$OPTARG" ;;
-        *)
-            echo "usage: $0 [-i input] [-o output] [-b blur]" >&2
-            exit 1
-            ;;
-    esac
-done
-shift $((OPTIND - 1))
+composite_convert() {
+    IN="${1:?input image required}"
+    OUT="${2:?output image required}"
 
-[ $# -gt 0 ] && IN="$1"
-[ $# -gt 1 ] && OUT="$2"
+    shift 2
+    set --
 
-if [ -z "${IN:-}" ]; then
-    set -- "$SCRIPT_DIR"/sample-wall.*
-    IN="$1"
-fi
+    if [ -n "${BLUR:-}" ]; then
+        set -- "$@" -blur "$BLUR"
+    fi
 
-: "${IN:?no input image found}"
+    convert "$IN" \
+        -resize 2560x1440^ \
+        -gravity center \
+        -extent 2560x1440 \
+        "$@" \
+        \( "$CACHE/box.png" -gravity center -geometry +0-50 \) \
+        -composite \
+        "png:$OUT"
+}
 
-. "$SCRIPT_DIR/lib/convert-helper"
+###############################################################################
+# runner (main)
+###############################################################################
 
-box_convert
-composite_convert "$IN" "$OUT"
+main() {
+    SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+
+    export CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/i3lock"
+    mkdir -p "$CACHE"
+
+    OUT="$CACHE/lock-wall.png"
+    BLUR=""
+    unset IN
+
+    while getopts "i:o:b:" opt; do
+        case "$opt" in
+            i) IN="$OPTARG" ;;
+            o) OUT="$OPTARG" ;;
+            b) BLUR="$OPTARG" ;;
+            *)
+                echo "usage: $0 [-i input] [-o output] [-b blur]" >&2
+                exit 1
+                ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    [ $# -gt 0 ] && IN="$1"
+    [ $# -gt 1 ] && OUT="$2"
+
+    if [ -z "${IN:-}" ]; then
+        set -- "$SCRIPT_DIR"/sample-wall.*
+        IN="$1"
+    fi
+
+    : "${IN:?no input image found}"
+
+    box_convert
+    composite_convert "$IN" "$OUT"
+}
+
+main "$@"
