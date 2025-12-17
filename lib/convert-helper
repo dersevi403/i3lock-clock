@@ -3,6 +3,8 @@ set -eu
 
 : "${CACHE:?CACHE must be set by caller}"
 
+BOX="$CACHE/box.png"
+
 box_convert() {
     BOX="$CACHE/box.png"
 
@@ -32,13 +34,17 @@ composite_convert() {
     IN="${1:?input image required}"
     OUT="${2:?output image required}"
 
-    BOX="$CACHE/box.png"
+		set  -- 
+
+		if [ -n "$BLUR" ]; then
+				set -- "$@" -blur "$BLUR"
+		fi
 
     convert "$IN" \
         -resize 2560x1440^ \
         -gravity center \
         -extent 2560x1440 \
-        -blur "${BLUR:-0x6}" \
+        "$@" \
         \( "$BOX" -gravity center -geometry +0-50 \) \
         -composite \
         "png:$OUT"

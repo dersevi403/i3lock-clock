@@ -7,8 +7,9 @@ export CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/lock"
 mkdir -p "$CACHE"
 
 OUT="$CACHE/lock-bg.png"
-BLUR="0x6"
-IN=""
+BLUR=""
+
+unset IN
 
 while getopts "i:o:b:" opt; do
     case "$opt" in
@@ -33,7 +34,7 @@ fi
 
 : "${IN:?no input image found}"
 
-. "$SCRIPT_DIR/lib/convert.sh"
+. "$SCRIPT_DIR/lib/convert-helper"
 
 box_convert
 composite_convert "$IN" "$OUT"
