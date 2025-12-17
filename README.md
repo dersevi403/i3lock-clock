@@ -19,7 +19,7 @@ curl -fsSL https://github.com/dersevi403/i3lock-clock/archive/refs/tags/v1.0.0.t
 
 ```sh
 cd i3lock
-chmod +x i3lock-clock i3lock-update-bg
+chmod +x i3lock-clock update-lockbg
 ```
 
 ## Usage

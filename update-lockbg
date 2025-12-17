@@ -3,10 +3,10 @@ set -eu
 
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 
-export CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/lock"
+export CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/i3lock"
 mkdir -p "$CACHE"
 
-OUT="$CACHE/lock-bg.png"
+OUT="$CACHE/lock-wall.png"
 BLUR=""
 
 unset IN
@@ -28,7 +28,7 @@ shift $((OPTIND - 1))
 [ $# -gt 1 ] && OUT="$2"
 
 if [ -z "${IN:-}" ]; then
-    set -- "$SCRIPT_DIR"/sample-bg.*
+    set -- "$SCRIPT_DIR"/sample-wall.*
     IN="$1"
 fi
 
