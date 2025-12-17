@@ -27,7 +27,7 @@ cp i3lock-clock update-lockbg ~/.local/bin
 
 ## Usage
 ```sh
-update-lockbg -i sample-bg.jpg -b 0x6
+update-lockbg -i sample-wall.jpg -b 0x6
 ```
 ```sh
 i3lock-clock
