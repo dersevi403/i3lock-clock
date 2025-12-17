@@ -1,4 +1,4 @@
-# i3lock with analog clock
+# i3lock digital clock
 
 i3lock-color wrapper that renders a lock screen background with transparency effect using convert tool.
 
