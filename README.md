@@ -28,3 +28,9 @@ update-lockbg -i sample-wall.jpg -b 0x6
 ```sh
 i3lock-clock
 ```
+
+## Uninstall
+
+```sh
+rm ~/.local/bin/{i3lock-clock,update-lockbg}
+```
