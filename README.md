@@ -32,5 +32,6 @@ i3lock-clock
 ## Uninstall
 
 ```sh
+sudo pacman -Rs i3lock-color
 rm ~/.local/bin/{i3lock-clock,update-lockbg}
 ```
