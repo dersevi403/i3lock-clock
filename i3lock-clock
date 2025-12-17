@@ -2,7 +2,7 @@
 set -eu
 
 CACHE="${XDG_CACHE_HOME:-$HOME/.cache}"
-IMG="$CACHE/lock/lock-bg.png"
+IMG="$CACHE/i3lock/lock-wall.png"
 
 [ -r "$IMG" ] || exit 1
 
