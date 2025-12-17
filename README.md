@@ -18,13 +18,13 @@ curl -fsSL https://github.com/dersevi403/i3lock-clock/archive/refs/tags/v1.1.0.t
 ```
 ```sh
 chmod +x i3lock-clock update-lockbg
-
 cp i3lock-clock update-lockbg ~/.local/bin
 ```
 
 ## Usage
 ```sh
 update-lockbg -i sample-wall.jpg -b 0x6
-
+```
+```sh
 i3lock-clock
 ```
