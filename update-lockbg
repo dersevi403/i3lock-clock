@@ -13,7 +13,7 @@ box_convert() {
     convert \
       -font DejaVu-Sans \
       \( -background none \
-         -pointsize 120 label:"88:88:88" \
+         -pointsize 120 label:"88:88" \
          -pointsize 32  label:"Wednesday 88 8888" \
          -append -border 22 \
       \) \
@@ -30,18 +30,22 @@ composite_convert() {
 		RES=$(xdpyinfo | awk '/dimensions:/ {print $2}')
 
 		ARGS=""
-    if [ -n "${BLUR:-}" ]; then
-        ARGS="-blur $BLUR"
+    [ -n "${BLUR:-}" ] && ARGS="-blur $BLUR"
+    
+
+    CMD="convert \"$IN\" \
+        -resize \"${RES}\"^ \
+        -gravity center \
+        -extent \"${RES}\" \
+        $ARGS"
+
+    if [ "${USE_BOX:-0}" -eq 1 ]; then
+        CMD="$CMD \
+        \( \"$CACHE/box.png\" -gravity center -geometry +0-50 \) \
+        -composite"
     fi
 
-    convert "$IN" \
-        -resize "${RES}"^ \
-        -gravity center \
-        -extent "${RES}" \
-        $ARGS \
-        \( "$CACHE/box.png" -gravity center -geometry +0-50 \) \
-        -composite \
-        "png:$OUT"
+    eval "$CMD \"png:$OUT\""
 }
 
 ###############################################################################
@@ -56,15 +60,17 @@ main() {
 
     OUT="$CACHE/lock-wall.png"
     BLUR=""
+		USE_BOX=0
     unset IN
 
-    while getopts "i:o:b:" opt; do
+    while getopts "i:o:b:x" opt; do
         case "$opt" in
             i) IN="$OPTARG" ;;
             o) OUT="$OPTARG" ;;
             b) BLUR="$OPTARG" ;;
+            x) USE_BOX=1 ;;
             *)
-                echo "usage: $0 [-i input] [-o output] [-b blur]" >&2
+                echo "usage: $0 [-i input] [-o output] [-b blur] [-x]" >&2
                 exit 1
                 ;;
         esac
@@ -81,7 +87,10 @@ main() {
 
     : "${IN:?no input image found}"
 
-    box_convert
+		if [ "$USE_BOX" -eq 1 ]; then
+				box_convert
+		fi
+
     composite_convert "$IN" "$OUT"
 }
 
