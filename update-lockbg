@@ -5,47 +5,20 @@ set -eu
 # library (convert-helper)
 ###############################################################################
 
-box_convert() {
-    : "${CACHE:?CACHE must be set}"
-
-    BOX="$CACHE/box.png"
-
-    convert \
-      -font DejaVu-Sans \
-      \( -background none \
-         -pointsize 120 label:"88:88" \
-         -pointsize 32  label:"Wednesday 88 8888" \
-         -append -border 22 \
-      \) \
-      -clone 0 \
-      -fill "#80808080" -colorize 100 \
-      -alpha set -channel A -evaluate set 50% +channel \
-      -delete 0 \
-      "$BOX"
-}
-
 composite_convert() {
     IN="${1:?input image required}"
     OUT="${2:?output image required}"
-		RES=$(xdpyinfo | awk '/dimensions:/ {print $2}')
+    RES=$(xdpyinfo | awk '/dimensions:/ {print $2}')
 
-		ARGS=""
-    [ -n "${BLUR:-}" ] && ARGS="-blur $BLUR"
-    
+    ARGS=()
+    [ -n "${BLUR:-}" ] && ARGS+=(-blur "$BLUR")
 
-    CMD="convert \"$IN\" \
-        -resize \"${RES}\"^ \
+    convert "$IN" \
+        -resize "${RES}"^ \
         -gravity center \
-        -extent \"${RES}\" \
-        $ARGS"
-
-    if [ "${USE_BOX:-0}" -eq 1 ]; then
-        CMD="$CMD \
-        \( \"$CACHE/box.png\" -gravity center -geometry +0-50 \) \
-        -composite"
-    fi
-
-    eval "$CMD \"png:$OUT\""
+        -extent "${RES}" \
+        "${ARGS[@]}" \
+        "$OUT"
 }
 
 ###############################################################################
@@ -63,35 +36,30 @@ main() {
 		USE_BOX=0
     unset IN
 
-    while getopts "i:o:b:x" opt; do
+    while getopts "i:o:b:" opt; do
         case "$opt" in
             i) IN="$OPTARG" ;;
             o) OUT="$OPTARG" ;;
             b) BLUR="$OPTARG" ;;
-            x) USE_BOX=1 ;;
             *)
-                echo "usage: $0 [-i input] [-o output] [-b blur] [-x]" >&2
+                echo "usage: $0 [-i input] [-o output] [-b blur]" >&2
                 exit 1
                 ;;
         esac
     done
     shift $((OPTIND - 1))
 
-    [ $# -gt 0 ] && IN="$1"
-    [ $# -gt 1 ] && OUT="$2"
+		[ -z "${IN:-}" ] && [ $# -gt 0 ] && IN="$1"
+		[ -z "${OUT:-}" ] && [ $# -gt 1 ] && OUT="$2"
 
-    if [ -z "${IN:-}" ]; then
-        set -- "$SCRIPT_DIR"/sample-wall.*
-        IN="$1"
-    fi
-
-    : "${IN:?no input image found}"
-
-		if [ "$USE_BOX" -eq 1 ]; then
-				box_convert
+		if [ -z "${IN:-}" ]; then
+				set -- "$SCRIPT_DIR"/sample-wall.*
+				IN="$1"
 		fi
 
-    composite_convert "$IN" "$OUT"
+		: "${IN:?no input image found}"
+
+		composite_convert "$IN" "$OUT"
 }
 
 main "$@"

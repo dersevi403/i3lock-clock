@@ -9,14 +9,14 @@ IMG="$CACHE/i3lock/lock-wall.png"
 i3lock \
 		--color=000000 \
 		--clock \
-		--time-pos x+140:y+h-140\
+		--time-pos x+160:y+h-150\
 		--time-color=ffffff \
 		--time-size=120 \
 		--time-font="Segoe UI Light" \
 		--time-str="%H:%M" \
 		--date-color=ffffff \
-		--date-size=40 \
-		--date-pos x+200:y+h-80\
+		--date-size=44 \
+		--date-pos x+220:y+h-80\
 		--date-font="Segoe UI Light" \
 		--date-str="%A, %Y-%m-%d" \
 		-i "$IMG"
