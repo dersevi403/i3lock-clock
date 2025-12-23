@@ -16,7 +16,7 @@ i3lock \
 		--time-str="%H:%M" \
 		--date-color=ffffff \
 		--date-size=44 \
-		--date-pos x+220:y+h-80\
+		--date-pos x+240:y+h-80\
 		--date-font="Segoe UI Light" \
-		--date-str="%A, %Y-%m-%d" \
+		--date-str="%A, %B %d" \
 		-i "$IMG"
