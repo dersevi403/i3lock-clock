@@ -9,7 +9,7 @@ IMG="$CACHE/i3lock/lock-wall.png"
 i3lock \
 		--color=000000 \
 		--clock \
-		--time-pos x+150:y+h-150\
+		--time-pos x+160:y+h-150\
 		--time-color=ffffff \
 		--time-size=120 \
 		--time-font="Segoe UI Light" \

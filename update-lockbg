@@ -1,65 +1,28 @@
 #!/bin/sh
 set -eu
 
-###############################################################################
-# library (convert-helper)
-###############################################################################
+CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/i3lock"
+mkdir -p "$CACHE"
+OUT="$CACHE/lock-wall.png"
 
-composite_convert() {
-    IN="${1:?input image required}"
-    OUT="${2:?output image required}"
-    RES=$(xdpyinfo | awk '/dimensions:/ {print $2}')
+IN=""
+BLUR=""
 
-    ARGS=()
-    [ -n "${BLUR:-}" ] && ARGS+=(-blur "$BLUR")
+while getopts "i:o:b:" opt; do
+    case "$opt" in
+        i) IN="$OPTARG" ;;
+        o) OUT="$OPTARG" ;;
+        b) BLUR="$OPTARG" ;;
+        *) echo "usage: $0 [-i input] [-o output] [-b blur]"; exit 1 ;;
+    esac
+done
+shift $((OPTIND-1))
 
-    convert "$IN" \
-        -resize "${RES}"^ \
-        -gravity center \
-        -extent "${RES}" \
-        "${ARGS[@]}" \
-        "$OUT"
-}
+: "${IN:?input image required}"
 
-###############################################################################
-# runner (main)
-###############################################################################
+RES=$(xdpyinfo | awk '/dimensions:/ {print $2}')
 
-main() {
-    SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+ARGS=""
+[ -n "$BLUR" ] && ARGS="-blur $BLUR"
 
-    export CACHE="${XDG_CACHE_HOME:-$HOME/.cache}/i3lock"
-    mkdir -p "$CACHE"
-
-    OUT="$CACHE/lock-wall.png"
-    BLUR=""
-		USE_BOX=0
-    unset IN
-
-    while getopts "i:o:b:" opt; do
-        case "$opt" in
-            i) IN="$OPTARG" ;;
-            o) OUT="$OPTARG" ;;
-            b) BLUR="$OPTARG" ;;
-            *)
-                echo "usage: $0 [-i input] [-o output] [-b blur]" >&2
-                exit 1
-                ;;
-        esac
-    done
-    shift $((OPTIND - 1))
-
-		[ -z "${IN:-}" ] && [ $# -gt 0 ] && IN="$1"
-		[ -z "${OUT:-}" ] && [ $# -gt 1 ] && OUT="$2"
-
-		if [ -z "${IN:-}" ]; then
-				set -- "$SCRIPT_DIR"/sample-wall.*
-				IN="$1"
-		fi
-
-		: "${IN:?no input image found}"
-
-		composite_convert "$IN" "$OUT"
-}
-
-main "$@"
+magick "$IN" -resize "${RES}"^ -gravity center -extent "${RES}" $ARGS "$OUT"
